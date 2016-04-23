@@ -4,6 +4,7 @@ The FC addon for Snapdragon flight contains binary drivers that require wrappers
 This repository contains the driver wrappers.
 
 Make sure the required env variables are set after installing the Hexagon SDK and gcc cross compiler.
+The env variable FC_ADDON need to point to the location of the Snapdragon Flight addon.
 
 To use these with PX4 you need to do the following:
 
