@@ -47,10 +47,13 @@ include_directories(
 	${FC_ADDON}/flight_controller/hexagon/inc
 	)
 
+add_library(librc_receiver SHARED IMPORTED GLOBAL)
+set_target_properties(librc_receiver PROPERTIES IMPORTED_LOCATION ${FC_ADDON}/flight_controller/hexagon/libs/librc_receiver.so)
+
 px4_add_module(
         MODULE ${MODULE_NAME}
         MAIN rc_receiver
-	STACK 1200
+	STACK_MAIN 1200
         COMPILE_FLAGS
                 -Os -Weffc++
         SRCS
@@ -59,6 +62,15 @@ px4_add_module(
 
         DEPENDS
                 platforms__common
-		${FC_ADDON}/flight_controller/hexagon/libs/librc_receiver.so
+
+	LINK_FLAGS
+		-L ${FC_ADDON}/flight_controller/hexagon/libs -l rc_receiver
         )
+
+set(module_external_libraries 
+	${module_external_libraries}
+	librc_receiver
+	CACHE INTERNAL "module_external_libraries"
+	)
+
 # vim: set noet ft=cmake fenc=utf-8 ff=unix : 

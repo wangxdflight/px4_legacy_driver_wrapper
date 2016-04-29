@@ -47,10 +47,13 @@ include_directories(
 	${FC_ADDON}/flight_controller/hexagon/inc
 	)
 
+add_library(libuart_esc SHARED IMPORTED GLOBAL)
+set_target_properties(libuart_esc PROPERTIES IMPORTED_LOCATION ${FC_ADDON}/flight_controller/hexagon/libs/libuart_esc.so)
+
 px4_add_module(
         MODULE ${MODULE_NAME}
         MAIN uart_esc
-	STACK 1200
+	STACK_MAIN 1200
         COMPILE_FLAGS
                 -Os -Weffc++
         SRCS
@@ -59,8 +62,12 @@ px4_add_module(
 
         DEPENDS
                 platforms__common
-		${FC_ADDON}/flight_controller/hexagon/libs/libuart_esc.so
-		${FC_ADDON}/flight_controller/hexagon/libs/libuart_esc_tester_impl.so
-		${FC_ADDON}/flight_controller/hexagon/libs/libuart_esc_tester_skel.so
         )
+
+set(module_external_libraries 
+	${module_external_libraries}
+	libuart_esc 
+	CACHE INTERNAL "module_external_libraries"
+	)
+	
 # vim: set noet ft=cmake fenc=utf-8 ff=unix : 
