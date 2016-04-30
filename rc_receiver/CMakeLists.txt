@@ -62,9 +62,6 @@ px4_add_module(
 
         DEPENDS
                 platforms__common
-
-	LINK_FLAGS
-		-L ${FC_ADDON}/flight_controller/hexagon/libs -l rc_receiver
         )
 
 set(module_external_libraries 
