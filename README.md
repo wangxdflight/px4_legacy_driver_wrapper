@@ -6,8 +6,8 @@ Following these instructions to build the PX4 flight code for Snapdragon Flight 
 
 ## Host Setup
 
-Follow the instructions here to install the tools, setup the environment variables, and build and run the Hello World project:
-https://github.com/ATLFlight/ATLFlightDocs
+Follow the instructions [here](https://github.com/ATLFlight/ATLFlightDocs) to install the tools, setup the environment variables.
+You can optionally build and run [HelloWorld](https://github.com/ATLFlight/ATLFlightDocs/blob/master/HelloWorld.md) to test your setup.
 
 Obtain the Flight Controller AddOn file (qcom_flight_controller_*.zip). The latest version is available from Intrinsyc at http://support.intrinsyc.com/projects/snapdragon-flight/files. Download and extract it to any location on your linux PC. The environment variable FC_ADDON needs to point to the location of the Snapdragon Flight addon.
 
