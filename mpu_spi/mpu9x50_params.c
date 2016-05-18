@@ -56,7 +56,7 @@
  *
  * @group MPU9x50 Configuration
  */
-PARAM_DEFINE_INT32(MPU_GYRO_LPF_ENUM, 4);
+PARAM_DEFINE_INT32(MPU_GYR_LPF_ENUM, 4);
 
 /**
  * IMU Low pass filter enum value for Accelerometer
@@ -86,4 +86,4 @@ PARAM_DEFINE_INT32(MPU_ACC_LPF_ENUM, 4);
  *
  * @group MPU9x50 Configuration
  */
-PARAM_DEFINE_INT32(MPU_SAMPLE_RATE_ENUM, 2);
+PARAM_DEFINE_INT32(MPU_SMPRATE_ENUM, 2);
