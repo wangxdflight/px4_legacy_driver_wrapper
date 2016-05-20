@@ -567,7 +567,7 @@ void task_main_trampoline(int argc, char *argv[])
 void start()
 {
 	ASSERT(_task_handle == -1);
-
+	PX4_ERR("px4 legacy wrapper, mpu9x50_main.cpp");
 	/* start the task */
 	_task_handle = px4_task_spawn_cmd("mpu9x50_main",
 					  SCHED_DEFAULT,

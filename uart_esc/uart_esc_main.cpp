@@ -81,7 +81,7 @@ int		_param_sub;
 
 // filenames
 // /dev/fs/ is mapped to /usr/share/data/adsp/
-static const char *MIXER_FILENAME = "/dev/fs/mixer_config.mix";
+static const char *MIXER_FILENAME = "/dev/fs/system/lib/rfsa/adsp/mixer_config.mix";
 
 
 // publications
@@ -147,7 +147,7 @@ void parameters_init()
 
 void parameters_update()
 {
-	PX4_WARN("uart_esc_main parameters_update");
+	PX4_WARN("px4_legacy_driver: uart_esc_main parameters_update");
 	int v_int;
 
 	if (param_get(_parameter_handles.model, &v_int) == 0) {
@@ -270,8 +270,8 @@ void uart_esc_rotate_motors(int16_t *motor_rpm, int num_rotors)
 
 void task_main(int argc, char *argv[])
 {
-	PX4_INFO("enter uart_esc task_main");
-
+	PX4_INFO("legacy driver wrapper: uart_esc_main, enter task_main");
+	static int poll_counter = 0;
 	_outputs_pub = nullptr;
 
 	parameters_init();
@@ -302,13 +302,18 @@ void task_main(int argc, char *argv[])
 
 		// set up mixer
 		if (initialize_mixer(MIXER_FILENAME) < 0) {
-			PX4_ERR("Mixer initialization failed.");
+			PX4_ERR("Mixer initialization failed....no task loop");
 			_task_should_exit = true;
 		}
 
 		// Main loop
 		while (!_task_should_exit) {
+			if (poll_counter % 100 == 0)
+				PX4_ERR("loop in uart_esc_main task, to poll");
 			int pret = px4_poll(&fds[0], (sizeof(fds) / sizeof(fds[0])), 100);
+			if (poll_counter % 100 == 0)
+				PX4_ERR("uart_esc_main poll returns, timemout? %d", pret);
+			poll_counter ++;
 
 			/* timed out - periodic check for _task_should_exit */
 			if (pret == 0) {
@@ -325,7 +330,8 @@ void task_main(int argc, char *argv[])
 
 			// Handle new actuator controls data
 			if (fds[0].revents & POLLIN) {
-
+				static unsigned int actuator_counter = 0;
+				actuator_counter ++;
 				// Grab new controls data
 				orb_copy(ORB_ID(actuator_controls_0), _controls_sub, &_controls);
 				// Mix to the outputs
@@ -350,6 +356,8 @@ void task_main(int argc, char *argv[])
 						motor_rpms[outIdx] = (int16_t)(((_outputs.output[outIdx] + 1.0) / 2.0) *
 								     (esc->max_rpm() - esc->min_rpm()) + esc->min_rpm());
 					}
+					if (actuator_counter % 100 == 0)
+						PX4_ERR("to uart_esc_rotate_motors");
 
 					uart_esc_rotate_motors(motor_rpms, _outputs.noutputs);
 
@@ -420,6 +428,7 @@ void task_main_trampoline(int argc, char *argv[])
 void start()
 {
 	ASSERT(_task_handle == -1);
+	PX4_ERR("px4 legacy wrapper, uart_esc_main.cpp, start");
 
 	/* start the task */
 	_task_handle = px4_task_spawn_cmd("uart_esc_main",

@@ -148,12 +148,13 @@ void parameter_update_poll()
 void start()
 {
 	ASSERT(_task_handle == -1);
+	PX4_ERR("px4 legacy wrapper, rc_reiver_main.cpp");
 
 	/* start the task */
 	_task_handle = px4_task_spawn_cmd("rc_receiver_main",
 					  SCHED_DEFAULT,
 					  SCHED_PRIORITY_MAX,
-					  1500,
+					  2048,
 					  (px4_main_t)&task_main_trampoline,
 					  nullptr);
 
@@ -212,6 +213,7 @@ void task_main(int argc, char *argv[])
 	uint64_t ts = hrt_absolute_time();
 	int ret;
 	int counter = 0;
+	static unsigned int rc_counter = 0;
 
 	_rc_in.timestamp_last_signal = ts;
 
@@ -237,7 +239,7 @@ void task_main(int argc, char *argv[])
 				_rc_in.rc_lost = true;
 
 				if (++counter == 500) {
-					PX4_WARN("RC signal lost for %u ms", time_diff_us / 1000);
+					PX4_WARN("px4 legacy wrapper: RC signal lost for %u ms", time_diff_us / 1000);
 					counter = 0;
 				}
 
@@ -270,6 +272,9 @@ void task_main(int argc, char *argv[])
 		}
 
 		orb_publish(ORB_ID(input_rc), _input_rc_pub, &_rc_in);
+		rc_counter ++;
+		if (rc_counter % 500 == 0)
+			PX4_ERR("px4 legacy wrapper: 500 RC data published");
 	}
 
 	rc_receiver_close(fd);

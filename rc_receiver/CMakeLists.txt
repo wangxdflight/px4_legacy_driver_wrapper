@@ -44,11 +44,14 @@ else()
 endif()
 
 include_directories(
-	${FC_ADDON}/flight_controller/hexagon/inc
+        ../../drivers/include
+        ../../drivers/mpu_spi/include
+        ../../drivers/uart_esc/adsp_proc
+        ../../drivers/rc_receiver/include
 	)
 
 add_library(librc_receiver SHARED IMPORTED GLOBAL)
-set_target_properties(librc_receiver PROPERTIES IMPORTED_LOCATION ${FC_ADDON}/flight_controller/hexagon/libs/librc_receiver.so)
+set_target_properties(librc_receiver PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/../../drivers/build_adsp/rc_receiver/adsp_proc/librc_receiver.so)
 
 px4_add_module(
         MODULE ${MODULE_NAME}
@@ -64,7 +67,7 @@ px4_add_module(
                 platforms__common
 
 	LINK_FLAGS
-		-L ${FC_ADDON}/flight_controller/hexagon/libs -l rc_receiver
+		-L ${CMAKE_CURRENT_SOURCE_DIR}/../../drivers/build_adsp/rc_receiver/adsp_proc -l rc_receiver
         )
 
 set(module_external_libraries 

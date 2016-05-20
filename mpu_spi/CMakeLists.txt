@@ -44,10 +44,13 @@ else()
 endif()
 
 add_library(libmpu9x50 SHARED IMPORTED GLOBAL)
-set_target_properties(libmpu9x50 PROPERTIES IMPORTED_LOCATION ${FC_ADDON}/flight_controller/hexagon/libs/libmpu9x50.so)
+set_target_properties(libmpu9x50 PROPERTIES IMPORTED_LOCATION /local/mnt/workspace/wangx/flight_8096/px4_internal/src/drivers/build_adsp/mpu_spi/adsp_proc/libmpu9x50.so)
 
 include_directories(
-	${FC_ADDON}/flight_controller/hexagon/inc
+        ../../drivers/include
+        ../../drivers/mpu_spi/include
+        ../../drivers/uart_esc/adsp_proc
+        ../../drivers/rc_receiver/include
 	)
 
 px4_add_module(
